@@ -423,7 +423,7 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
 		AVLTree<WordFreq> t = new AVLTree<>();
         //AVLTree<Integer> t = new AVLTree<>();
         AVLTree<WordFreq> t2 = new AVLTree<>();
-		List<WordFreq> missing = new List<>();// in list form
+		List<WordFreq> missing = new List<WordFreq>();// in list form
 		File dictionary = new File("C:\\Users\\steph\\Downloads\\'CS Project 3'\\dictionary.txt");
 		
 		BufferedReader dic = new BufferedReader(new FileReader(dictionary));
@@ -461,7 +461,9 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
 			}
 			//find words that are close to it (10 words)
 			for (int x = 0; x < missing.length; x++){
-				missing.get(x).findClose(t);
+				missing.get(x).findClose(t.root);// needs to get to that first node
+				System.out.println(missing.get(x).word +"("+ missing.get(x).freq + "):");
+				missing.get(x).matchCase.printMatches();
 			}
 			//then put those words into an avl tree
 			for (int y = 0; y < missing.length; y++){
