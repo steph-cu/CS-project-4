@@ -420,7 +420,7 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
 
     // Test program
     public static void main(String[] args) {
-		AVLTree<WordFreq> t = new AVLTree<>();
+	AVLTree<WordFreq> t = new AVLTree<>();
         //AVLTree<Integer> t = new AVLTree<>();
         AVLTree<WordFreq> t2 = new AVLTree<>();
 		List<WordFreq> missing = new List<WordFreq>();// in list form
@@ -437,25 +437,31 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
 		String[] paragraphs = {"p.txt", "paragraph1.txt", "paragraph2.txt", "paragraph3.txt"};
 		for (int i = 0; i < 4; i++){
 			BufferedReader para = new BufferedReader(new FileReader(paragraphs[i]));// probably needs fixing
-			String paraWords;
+			String paraLine;
+			String[] paraW;
 			// finds word in dictionary
-			while((paraWords = para.readLine()) != null){
-				// if it does goes to next word
-				if (t.contains(paraWords) == true) continue;
-				// if it doesn't:
-				else{
-					int j = 0;
-					while (j <= missing.length){
-				//      puts word in list if not found
-						if (j == missing.length) {
-							missing.add(paraWords);
-							break;
+			while(para.hasNextLine()){// gets the line
+				paraLine = para.nextLine();// puts line into string
+				paraLine = paraLine.toLowerCase().replaceAll("\\p{Punct}","");// gets rid of punctuation and uppercase
+				paraW = paraLine.split(" ");// slits the line into words 
+				for (String paraWords: paraW){// for each word find in dic
+					// if it does goes to next word
+					if (t.contains(paraWords) == true) continue;
+					// if it doesn't:
+					else{
+						int j = 0;
+						while (j <= missing.length){
+					//      puts word in list if not found
+							if (j == missing.length) {
+								missing.add(paraWords);
+								break;
+							}
+					//      repeats increases the freq
+							if (missing.get(j) == paraWords){
+								missing.get(j).incFreq();
+							}
+							j++;
 						}
-				//      repeats increases the freq
-						if (missing.get(j) == paraWords){
-							missing.get(j).incFreq();
-						}
-						j++;
 					}
 				}
 			}
