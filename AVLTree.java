@@ -417,20 +417,21 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
     private AvlNode<AnyType> root;
     private AvlNode prev;
 
-
-    // Test program
+    // Test
     public static void main(String[] args) {
-	AVLTree<WordFreq> t = new AVLTree<>();
+		AVLTree<String> dicTree = new AVLTree<>();
         //AVLTree<Integer> t = new AVLTree<>();
         AVLTree<WordFreq> t2 = new AVLTree<>();
+		List<String> dicList = new List<String>();
 		List<WordFreq> missing = new List<WordFreq>();// in list form
 		File dictionary = new File("C:\\Users\\steph\\Downloads\\'CS Project 3'\\dictionary.txt");
 		
 		BufferedReader dic = new BufferedReader(new FileReader(dictionary));
 		String dicWords;
-		while((dicWords = dic.readLine()) != null){
-			WordFreq<String> diction = new WordFreq<>(dicWords);// puts into a WordFreq
-			t.insert(diction);// put dictionary in AVL tree
+		while((dicWords = dic.readLine()) != null){// prob chAGNGE to string avltree, and make a list
+			//WordFreq<String> diction = new WordFreq<>(dicWords);// puts into a WordFreq
+			dicTree.insert(diction);// put dictionary in AVL tree
+			dicList.add(diction);
 		}
 		//t.printTree();
 		// takes word from paragraphs
@@ -446,18 +447,19 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
 				paraW = paraLine.split(" ");// slits the line into words 
 				for (String paraWords: paraW){// for each word find in dic
 					// if it does goes to next word
-					if (t.contains(paraWords) == true) continue;
+					if (paraWords == "" && t.contains(paraWords) != null) continue;
 					// if it doesn't:
 					else{
 						int j = 0;
 						while (j <= missing.length){
 					//      puts word in list if not found
 							if (j == missing.length) {
-								missing.add(paraWords);
+								WordFreq<String> pWords = new WordFreq<>(paraWords);
+								missing.add(pWords);
 								break;
 							}
 					//      repeats increases the freq
-							if (missing.get(j) == paraWords){
+							if (missing.get(j).word == paraWords){
 								missing.get(j).incFreq();
 							}
 							j++;
@@ -467,7 +469,7 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
 			}
 			//find words that are close to it (10 words)
 			for (int x = 0; x < missing.length; x++){
-				missing.get(x).findClose(t.root);// needs to get to that first node
+				missing.get(x).findClose(dicList);// needs to get to that first node
 				System.out.println(missing.get(x).word +"("+ missing.get(x).freq + "):");
 				missing.get(x).matchCase.printMatches();
 			}
@@ -475,8 +477,9 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
 			for (int y = 0; y < missing.length; y++){
 				t2.insert(missing.get(y));// needs to be inserted by the frequency
 			}
-			t2.printTree();
+			//t2.printTree();
 		}
     }
 
 }
+
