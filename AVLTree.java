@@ -421,60 +421,68 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
     public static void main(String[] args) {
 		AVLTree<String> dicTree = new AVLTree<>();
         //AVLTree<Integer> t = new AVLTree<>();
-        AVLTree<WordFreq> t2 = new AVLTree<>();
-		List<String> dicList = new List<String>();
-		List<WordFreq> missing = new List<WordFreq>();// in list form
+		ArrayList<String> dicList = new ArrayList<String>();
 		File dictionary = new File("C:\\Users\\steph\\Downloads\\'CS Project 3'\\dictionary.txt");
-		
-		BufferedReader dic = new BufferedReader(new FileReader(dictionary));
-		String dicWords;
-		while((dicWords = dic.readLine()) != null){// prob chAGNGE to string avltree, and make a list
-			//WordFreq<String> diction = new WordFreq<>(dicWords);// puts into a WordFreq
-			dicTree.insert(diction);// put dictionary in AVL tree
-			dicList.add(diction);
+		try{
+			Scanner dic = new Scanner(dictionary);
+			String dicWords;
+			while(dic.hasNextLine()){// prob chAGNGE to string avltree, and make a list
+				//WordFreq<String> diction = new WordFreq<>(dicWords);// puts into a WordFreq
+				dicWords = dic.nextLine();
+				dicTree.insert(dicWords);// put dictionary in AVL tree
+				dicList.add(dicWords);
+			}
 		}
+		catch (Exception e){}
 		//t.printTree();
 		// takes word from paragraphs
 		String[] paragraphs = {"p.txt", "paragraph1.txt", "paragraph2.txt", "paragraph3.txt"};
 		for (int i = 0; i < 4; i++){
-			BufferedReader para = new BufferedReader(new FileReader(paragraphs[i]));// probably needs fixing
-			String paraLine;
-			String[] paraW;
+			AVLTree<WordFreq> t2 = new AVLTree<>();
+			ArrayList<WordFreq> missing = new ArrayList<WordFreq>();// in list form
+			try{
+				Scanner para = new Scanner(new File(paragraphs[i]));// probably needs fixing
+				String paraLine;
+				String[] paraW;
+			
 			// finds word in dictionary
-			while(para.hasNextLine()){// gets the line
-				paraLine = para.nextLine();// puts line into string
-				paraLine = paraLine.toLowerCase().replaceAll("\\p{Punct}","");// gets rid of punctuation and uppercase
-				paraW = paraLine.split(" ");// slits the line into words 
-				for (String paraWords: paraW){// for each word find in dic
-					// if it does goes to next word
-					if (paraWords == "" && t.contains(paraWords) != null) continue;
-					// if it doesn't:
-					else{
-						int j = 0;
-						while (j <= missing.length){
-					//      puts word in list if not found
-							if (j == missing.length) {
-								WordFreq<String> pWords = new WordFreq<>(paraWords);
-								missing.add(pWords);
-								break;
+				while(para.hasNextLine()){// gets the line
+					paraLine = para.nextLine();// puts line into string
+					paraLine = paraLine.toLowerCase().replaceAll("\\p{Punct}","");// gets rid of punctuation and uppercase
+					paraW = paraLine.split(" ");// slits the line into words 
+					for (String paraWords: paraW){// for each word find in dic
+						// if it does goes to next word
+						if (paraWords == "" || dicTree.contains(paraWords) != null) continue;
+						// if it doesn't:
+						else{
+							int j = 0;
+							while (j <= missing.size()){
+						//      puts word in list if not found
+								if (j == missing.size()) {
+									WordFreq pWords = new WordFreq(paraWords);
+									missing.add(pWords);
+									break;
+								}
+						//      repeats increases the freq
+								if (missing.get(j).word == paraWords){
+									missing.get(j).incFreq();
+									break;
+								}
+								j++;
 							}
-					//      repeats increases the freq
-							if (missing.get(j).word == paraWords){
-								missing.get(j).incFreq();
-							}
-							j++;
 						}
 					}
 				}
 			}
+			catch(Exception e){}
 			//find words that are close to it (10 words)
-			for (int x = 0; x < missing.length; x++){
+			for (int x = 0; x < missing.size(); x++){
 				missing.get(x).findClose(dicList);// needs to get to that first node
 				System.out.println(missing.get(x).word +"("+ missing.get(x).freq + "):");
-				missing.get(x).matchCase.printMatches();
+				missing.get(x).mCase.printMatches();
 			}
 			//then put those words into an avl tree
-			for (int y = 0; y < missing.length; y++){
+			for (int y = 0; y < missing.size(); y++){
 				t2.insert(missing.get(y));// needs to be inserted by the frequency
 			}
 			//t2.printTree();
@@ -482,4 +490,3 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>> {
     }
 
 }
-
