@@ -1,18 +1,22 @@
+
+import java.util.*;
 public class WordFreq implements Comparable<WordFreq> {
 	public WordFreq(String lang){
 		word = lang; 
 		freq = 0;
+		mCase = new matchCase();
 	}
-	private Integer freq;// stores how many times its been used
-	private String word;// store the word
-	private class matchCase{// how well it matches
+	public Integer freq;// stores how many times its been used
+	public String word;// store the word
+	public matchCase mCase;
+	public class matchCase{// how well it matches
 		public matchCase(){
 			matches = new String[10];
 			off = new int[10]; 
 		}
 		public matchCase(String mat, int offby, int place){
 			matches[place] = mat;
-			off = offby;
+			off[place] = offby;
 		}
 		String[] matches;
 		int[] off; 
@@ -20,6 +24,7 @@ public class WordFreq implements Comparable<WordFreq> {
 			for(int i = 0; i < 10; i++){
 				System.out.print(matches[i] + "(" + off[i] + "), ");
 			}
+			System.out.print("\n");
 		}
 	}
 	
@@ -73,13 +78,13 @@ public class WordFreq implements Comparable<WordFreq> {
         //System.out.println(dp[len1][len2]);
         return dp[len1][len2];
     }
-	public void findClose(List<WordFreq> list){// replace for going through a list of the dictionary
-		for(int j = 0; j < list.length; j++){
+	public void findClose(ArrayList<String> list){// replace for going through a list of the dictionary
+		for(int j = 0; j < list.size(); j++){
 			int distance = minDistance(this.word, list.get(j));// to get distance between this word and the current dic word 
 			for (int i = 0; i < 10; i++){// goes through the " close matches list " 
-				if (this.matchCase.off[i] == 0 || this.matchCase.off[i] > distance){// if it hasn't been filled or the distance of the current dic word is shorter
-					this.matchCase.matches[i] = list.get(j);// the place in matches will be filled with current dic word 
-					this.matchCase.off[i] = distance; 
+				if (this.mCase.off[i] == 0 || this.mCase.off[i] > distance){// if it hasn't been filled or the distance of the current dic word is shorter
+					this.mCase.matches[i] = list.get(j);// the place in matches will be filled with current dic word 
+					this.mCase.off[i] = distance; 
 					break;// and out of loop it goes 
 				} 
 			}
